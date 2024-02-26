@@ -29,6 +29,8 @@ public class EnhanceSsrWasm {
             String output = plugin.call("ssr", inputJson);
 
             System.out.println("Output: " + output);
+
+            plugin.close();
         } catch (Exception e) {
             e.printStackTrace();
         }
