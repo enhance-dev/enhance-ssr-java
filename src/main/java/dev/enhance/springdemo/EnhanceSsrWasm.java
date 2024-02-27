@@ -1,7 +1,8 @@
-
+package dev.enhance.springdemo;
 import org.extism.sdk.Plugin;
 import org.extism.sdk.manifest.Manifest;
 import org.extism.sdk.wasm.PathWasmSource;
+import org.springframework.boot.autoconfigure.security.SecurityProperties.User;
 
 import java.io.File;
 import java.io.IOException;
@@ -10,6 +11,9 @@ import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import com.google.gson.Gson;
+import dev.enhance.springdemo.EnhanceSsrWasmResponse;
 
 public class EnhanceSsrWasm {
 
@@ -33,7 +37,8 @@ public class EnhanceSsrWasm {
 
         return elements;
     }
-    public static void main(String[] args) {
+    public static String ssr(String document) {
+        EnhanceSsrWasmResponse response = null;
         try {
             // Hint: path starts from the root of the java project
             String wasmPath = "./enhance-ssr.wasm";
@@ -43,20 +48,21 @@ public class EnhanceSsrWasm {
             Plugin plugin = new Plugin(manifest, true, null);
 
             Map<String, Object> input = Map.of(
-                    "markup", "<my-header>Hello world!</my-header>",
+                    "markup", document,
                     "elements", readElements("elements"),
                     "initialState", List.of()
             );
 
-            String inputJson = new com.google.gson.Gson().toJson(input);
-
+            String inputJson = new Gson().toJson(input);
             String output = plugin.call("ssr", inputJson);
-
-            System.out.println("Output: " + output);
+            Gson gson = new Gson();
+            response = gson.fromJson(output, EnhanceSsrWasmResponse.class);
 
             plugin.close();
         } catch (Exception e) {
             e.printStackTrace();
         }
+
+        return response.getDocument();
     }
 }

@@ -30,8 +30,10 @@ curl -L https://github.com/enhance-dev/enhance-ssr-wasm/releases/download/v0.0.3
 ## Run the demo
 
 ```sh
-./gradlew run
+./gradlew bootRun
 ```
+
+Load http://localhost:8080
 
 ## Acknowledgements
 
